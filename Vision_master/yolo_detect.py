@@ -342,7 +342,11 @@ while True:
 
                 # 当前目标（必须赋值，才会输出dx/dy）
                 current_target = obj_list[cur_obj_idx]
-                current_track = tracks.get(current_target["label"], None)
+                current_track = None
+                for t in tracks.values():
+                    if t["label"] == current_target["label"]:
+                        current_track = t
+                        break
                 current_selected_track = current_track
 
                 # 核心逻辑：区分“是否为最后一个”
@@ -360,7 +364,11 @@ while True:
                     # --- 逻辑分支 B：还有后续目标，尝试切换 ---
                     next_idx = cur_obj_idx + 1
                     next_target = obj_list[next_idx]
-                    next_track = tracks.get(next_target["label"], None)
+                    next_track = None
+                    for t in tracks.values():
+                        if t["label"] == next_target["label"]:
+                            next_track = t
+                            break
 
                     # 只有时间到了且下一个目标稳定，才执行切换
                     if time.time() - last_switch_t >= SWITCH_INTERVAL:
@@ -408,19 +416,29 @@ while True:
             cur_obj_idx = 0
 
         current_target = obj_list[cur_obj_idx]
-        current_track = tracks.get(current_target["label"], None)
+        current_track = None
+        for t in tracks.values():
+            if t["label"] == current_target["label"]:
+                current_track = t
+                break
         current_selected_track = current_track
 
-        next_idx = cur_obj_idx + 1
-        if next_idx >= list_len:
-            current_mode = MODE_WAIT
-            cur_obj_idx = 0
-            last_obj_id = 99
-            print("04 一轮完成")
-            current_selected_track = None
+        is_last = (cur_obj_idx == list_len - 1)
+        if is_last:
+            if time.time() - last_switch_t >= SWITCH_INTERVAL:
+                current_mode = MODE_WAIT
+                cur_obj_idx = 0
+                last_obj_id = 99
+                cycle_finished = True
+                print("04 一轮完成")
         else:
+            next_idx = cur_obj_idx + 1
             next_target = obj_list[next_idx]
-            next_track = tracks.get(next_target["label"], None)
+            next_track = None
+            for t in tracks.values():
+                if t["label"] == next_target["label"]:
+                    next_track = t
+                    break
 
             # 15秒到 + 下一个稳定 → 切换
             if time.time() - last_switch_t >= SWITCH_INTERVAL:
