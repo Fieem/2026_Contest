@@ -1,0 +1,25 @@
+description: Ultralytics YOLO11n model trained on ./data.yaml
+author: Ultralytics
+date: '2026-04-25T17:08:10.323098'
+version: 8.3.231
+license: AGPL-3.0 License (https://ultralytics.com/license)
+docs: https://docs.ultralytics.com
+stride: 32
+task: detect
+batch: 1
+imgsz:
+- 320
+- 320
+names:
+  0: apple
+  1: bananna
+  2: circle
+  3: square
+  4: strawberry
+  5: trapezoid
+  6: triangle
+  7: watermelon
+args:
+  batch: 1
+  half: true
+channels: 3
